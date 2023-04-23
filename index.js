@@ -10,16 +10,16 @@ const TASK_CLASSES = {
   [TASK_CLASS_VIEW]: { next: [TASK_CLASS_EDIT]}
 };
 
-const BUTTON_ADD = 'Add';
-const BUTTON_EDIT = 'Edit';
-const BUTTON_SAVE = 'Save';
-const BUTTON_DELETE = 'Delete';
-const BUTTON_STATUSES = {
-  [BUTTON_ADD]: { next: [BUTTON_EDIT]}, 
-  [BUTTON_EDIT]: { next: [BUTTON_SAVE]}, 
-  [BUTTON_SAVE]: { next: [BUTTON_EDIT]}, 
-  [BUTTON_DELETE]: { next: [BUTTON_ADD]}
-};
+// const BUTTON_ADD = 'Add';
+// const BUTTON_EDIT = 'Edit';
+// const BUTTON_SAVE = 'Save';
+// const BUTTON_DELETE = 'Delete';
+// const BUTTON_STATUSES = {
+//   [BUTTON_ADD]: { next: [BUTTON_EDIT]}, 
+//   [BUTTON_EDIT]: { next: [BUTTON_SAVE]}, 
+//   [BUTTON_SAVE]: { next: [BUTTON_EDIT]}, 
+//   [BUTTON_DELETE]: { next: [BUTTON_ADD]}
+// };
 
 const TASK_STATUS_NEW = 'new';
 const TASK_STATUS_INCOMPLETE = 'incomplete';
@@ -30,12 +30,12 @@ const TASK_STATUSES = {
   [TASK_STATUS_COMPLETE]: { label:'Completed', next: [TASK_STATUS_INCOMPLETE]}
 };
 
-const ACTION_ADD = BUTTON_ADD.toUpperCase();
-const ACTION_EDIT = BUTTON_EDIT.toUpperCase();
-const ACTION_SAVE = BUTTON_SAVE.toUpperCase();
-const ACTION_DELETE = BUTTON_DELETE.toUpperCase();
-const ACTION_NEXT_BUTTON = 'NEXT_BUTTON';
-const ACTION_NEXT_STATUS = 'NEXT_STATUS';
+// const ACTION_ADD = BUTTON_ADD.toUpperCase();
+// const ACTION_EDIT = BUTTON_EDIT.toUpperCase();
+// const ACTION_SAVE = BUTTON_SAVE.toUpperCase();
+// const ACTION_DELETE = BUTTON_DELETE.toUpperCase();
+// const ACTION_NEXT_BUTTON = 'NEXT_BUTTON';
+// const ACTION_NEXT_STATUS = 'NEXT_STATUS';
 
 const DEFAULT_TASKS = [
     {text: ''},
@@ -43,10 +43,15 @@ const DEFAULT_TASKS = [
     {text: 'Go Shopping', completed: false, saved: false},
     {text: 'See the Doctor', completed: true, saved: true}
 ];
-const TAGS = ['main', 'section', 'label', 'input', 'button', 'img'];
+const TAGS = upperCaseObject(['main', 'section', 'label', 'input', 'button', 'img', 'h3', 'ul', 'div', 'li']);
+const PROPERTIES = upperCaseObject(['tag', 'name', 'function', 'action', 'saved', 'completed', 'next']);
+const EVENTS = upperCaseObject(['click', 'change']);
+const INPUT_TYPES = upperCaseObject(['text', 'checkbox']);
+const BUTTON_CLASSES = upperCaseObject(['edit', 'delete']);
+const BUTTONS = upperCaseObject(['Add', ['Edit', 'Save'], ['Save', 'Edit'], 'Delete'], { label: true, next: true });
+const ACTIONS = upperCaseObject(['Add', 'Edit', 'Save', 'Delete', 'NEXT_BUTTON', 'NEXT_STATUS'], { label: true });
 
-// { MAIN: 'main', SECTION: 'section', LABEL: 'label', INPUT: 'input', BUTTON: 'button', IMG: 'img' };
-// const PROPERTIES = { TAG: 'tag', NAME: 'NAME', FUNCTION: 'function', ACTION: 'action' }
+ console.log(ACTIONS);
 
 class DomElements{
   constructor(parent) {
@@ -54,10 +59,10 @@ class DomElements{
   }
   addElement(element){
     console.log(element.tag);
-    if (element && element.hasOwnProperty('tag')) {
+    if (element && element.hasOwnProperty(PROPERTIES.TAG)) {
       this.element = document.createElement(element.tag);
       for (const [key, value] of Object.entries(element)){
-        if (key !== 'tag') this.element[key] = value;
+        if (key !== PROPERTIES.TAG) this.element[key] = value;
       }
     }
     this.parent.appendChild(this.element); 
@@ -68,21 +73,33 @@ class DomElements{
     return this;
   }
   setEvent(eventDetails) {
-    if (eventDetails && eventDetails.hasOwnProperty('name')) {
-      if (eventDetails.hasOwnProperty('function')) this.element.addEventListener(eventDetails.name, eventDetails.function);
-      if (eventDetails.hasOwnProperty('action')) this.element.addEventListener(eventDetails.name, (event) => {actionTask(event.target, eventDetails.action)});
+    if (eventDetails && eventDetails.hasOwnProperty(PROPERTIES.NAME)) {
+      if (eventDetails.hasOwnProperty(PROPERTIES.FUNCTION)) this.element.addEventListener(eventDetails.name, eventDetails.function);
+      if (eventDetails.hasOwnProperty(PROPERTIES.ACTION)) this.element.addEventListener(eventDetails.name, (event) => {actionTask(event.target, eventDetails.action)});
     }
     return this;
   }
 }
 
-createSections();
-loadTasks();
 
-function loadTasks(){
-  for (let task of DEFAULT_TASKS){
-    createTask(task);
+function transform(value, options) {
+  const next = options.hasOwnProperty('next');
+  let valuesOptions;
+  if (Array.isArray(value)) {
+    valuesOptions = [String(value[0]).toUpperCase(), {label: value[0], next: value[1]}];
+  } else {
+    if (next) {
+      valuesOptions = [String(value).toUpperCase(), { label: value, next: value}];
+    } else {
+      valuesOptions = [String(value).toUpperCase(), { label: value}];
+    }
   }
+  
+  return valuesOptions; 
+}
+
+function upperCaseObject(array, options) {
+  return Object.fromEntries(array.map((value) => (options) ? transform(value, options) : [String(value).toUpperCase(), value]));
 }
 
 function ajaxRequest(){
@@ -96,12 +113,12 @@ function createSections(){
      domSection.addElement({ tag:TAGS.SECTION, id: getSectionId(status) })
        .setParent()
        .addElement({ tag:'h3', innerText: detail.label })
-       .addElement( {tag:((status !== TASK_STATUS_NEW) ? 'ul' : 'div'), id: getTaskListId(status) });
+       .addElement( {tag:((status !== TASK_STATUS_NEW) ? TAGS.UL : TAGS.DIV), id: getTaskListId(status) });
   }
 }
 
 function getStatusFromTask(task){
-  const index = (task.hasOwnProperty('completed')) ? (1 + +task.completed) : 0;
+  const index = (task.hasOwnProperty(PROPERTIES.COMPLETED)) ? (1 + +task.completed) : 0;
   const taskKeys = Object.keys(TASK_STATUSES);
   
   return (index >=0 && index < taskKeys.length) ? taskKeys[index] : null;
@@ -110,27 +127,27 @@ function getStatusFromTask(task){
 function createTask(newTask){
   const status = getStatusFromTask(newTask);
   if (status) {
-    const buttonStatuses = Object.keys(BUTTON_STATUSES);
+    const buttonStatuses = Object.values(BUTTONS);
     const taskClasses = Object.keys(TASK_CLASSES);
     const {text, completed, saved} = newTask;
     const taskContainer = document.getElementById(getTaskListId(status));
     const domElements = new DomElements(taskContainer);
     if (status === TASK_STATUS_NEW) {
-      domElements.addElement({ tag: TAGS.INPUT, className: getTaskListId(TAGS.INPUT), type: 'text', value: text })
-        .addElement({ tag: TAGS.BUTTON, innerText: BUTTON_ADD, value: text })
-        .setEvent({ name: 'click', action: ACTION_ADD })
-        .setEvent({ name: 'click', function: ajaxRequest });
+      domElements.addElement({ tag: TAGS.INPUT, className: getTaskListId(TAGS.INPUT), type: INPUT_TYPES.TEXT, value: text })
+        .addElement({ tag: TAGS.BUTTON, innerText: BUTTONS.ADD.label, value: text })
+        .setEvent({ name: EVENTS.CLICK, action: ACTIONS.ADD.label })
+        .setEvent({ name: EVENTS.CLICK, function: ajaxRequest });
     } else {
-      domElements.addElement({ tag: 'li', className: taskClasses[+saved] })
+      domElements.addElement({ tag: TAGS.LI, className: taskClasses[+saved] })
         .setParent()
-        .addElement({ tag: TAGS.INPUT, type: 'checkbox', checked: completed })
-        .setEvent({ name: 'change', action: ACTION_NEXT_STATUS }) 
-        .addElement({ tag: TAGS.LABEL, className: getTaskListId(TAGS.INPUT), type: 'text', innerText: text })
-        .addElement({ tag: TAGS.INPUT, className: getTaskListId(TAGS.INPUT), type: 'text', value: text })
-        .addElement({ tag: TAGS.BUTTON, className: 'edit', innerText: buttonStatuses[1 + +!saved] })
-        .setEvent({ name: 'click', action: ACTION_NEXT_BUTTON }) 
-        .addElement({ tag: TAGS.BUTTON, className: 'delete' })
-        .setEvent({ name: 'click', action: ACTION_DELETE }) 
+        .addElement({ tag: TAGS.INPUT, type: INPUT_TYPES.CHECKBOX, checked: completed })
+        .setEvent({ name: EVENTS.CHANGE, action: ACTIONS.NEXT_STATUS.label }) 
+        .addElement({ tag: TAGS.LABEL, className: getTaskListId(TAGS.INPUT), type: INPUT_TYPES.TEXT, innerText: text })
+        .addElement({ tag: TAGS.INPUT, className: getTaskListId(TAGS.INPUT), type: INPUT_TYPES.TEXT, value: text })
+        .addElement({ tag: TAGS.BUTTON, className: BUTTON_CLASSES.EDIT, innerText: buttonStatuses[1 + +!saved].label })
+        .setEvent({ name: EVENTS.CLICK, action: ACTIONS.NEXT_BUTTON.label }) 
+        .addElement({ tag: TAGS.BUTTON, className: BUTTON_CLASSES.DELETE })
+        .setEvent({ name: EVENTS.CLICK, action: ACTIONS.DELETE.label }) 
         .setParent()
         .addElement({ tag: TAGS.IMG, src: './button-delete.svg' });
     }
@@ -150,7 +167,8 @@ function updateInput(taskClass, [label, input]){
 
 function nextState(key, dataKeys){
   const details = dataKeys[key];
-  return (details && details.hasOwnProperty('next')) ? details.next : key;
+  console.log('>>', dataKeys);
+  return (details && details.hasOwnProperty(PROPERTIES.NEXT)) ? details.next : key;
 }
 function actionAdd(listItem) {
   const input = listItem.querySelector('input[type=text]');
@@ -166,7 +184,7 @@ function actionNextButton(listItem) {
   const className = listItem.classList.value;
   
   updateInput(className, [label, input]);
-  button.innerText = nextState(button.innerText, BUTTON_STATUSES);
+  button.innerText = nextState(button.innerText, BUTTONS);
   listItem.classList.value = nextState(className, TASK_CLASSES);
 }
 
@@ -182,18 +200,27 @@ function actionNextStatus(list, listItem) {
 function actionTask(task, action){
   const listItem = task?.parentNode;
   const list = listItem?.parentNode;
+  console.log(action);
   switch (action) {
-    case ACTION_ADD:
+    case ACTIONS.ADD.label:
       actionAdd(listItem);
       break;
-    case ACTION_NEXT_BUTTON:
+    case ACTIONS.NEXT_BUTTON.label:
       actionNextButton(listItem);
       break;
-    case ACTION_DELETE:
+    case ACTIONS.DELETE.label:
       actionDelete(list);
       break;
-    case ACTION_NEXT_STATUS:
+    case ACTIONS.NEXT_STATUS.label:
       actionNextStatus(list, listItem)
       break;
   }   
 }
+function loadTasks(){
+  for (let task of DEFAULT_TASKS){
+    createTask(task);
+  }
+}
+
+createSections();
+loadTasks();
