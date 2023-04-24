@@ -1,4 +1,3 @@
-
 class NodeList{
   constructor (names = [], labels = [], classes = []) {
     this.nameList = [...names];
@@ -62,14 +61,15 @@ class NodeList{
   getLength () {
     return this.nameList.length;
   }
-  
 }
+
 const DEFAULT_TASKS = [
   {text: ''},
   {text: 'Pay Bills', completed: false, saved: true},
   {text: 'Go Shopping', completed: false, saved: false},
   {text: 'See the Doctor', completed: true, saved: true}
 ];
+
 const properties = new NodeList(['tag', 'name', 'function', 'action', 'saved', 'completed', 'next']);
 const sections = new NodeList(['new', 'incomplete', 'complete'], ['Add item', 'Todo', 'Completed']).setMask('section-');
 const tasks = new NodeList(['new', 'incomplete', 'complete']).setMask('tasks-').setNextByName('incomplete', 'complete').setNextByName('complete', 'incomplete');
@@ -82,7 +82,6 @@ const taskClasses = new NodeList(['all', 'view', 'edit'], ['task', 'task-view', 
 const classes = new NodeList(['taskList', 'inputNew', 'button', 'checkbox', 'label', 'task', 'buttonImage'], ['task-list', 'input-new', 'button', 'checkbox', 'label', 'task', 'button-image']);
 const other = new NodeList(['deleteButtonSrc', 'textInput'], ['./button-delete.svg', '[type=text]']);
 
-
 class DomElements{
   constructor(parent) {
     this.parent = parent;
@@ -90,7 +89,7 @@ class DomElements{
   addElement(element){
     if (element && element.hasOwnProperty(properties.constant.tag)) {
       this.element = document.createElement(element.tag);
-      for (const [key, value] of Object.entries(element)){
+      for (const [key, value] of Object.entries(element)) {
         if (key !== properties.constant.tag) this.element[key] = value;
       }
     }
@@ -110,13 +109,13 @@ class DomElements{
   }
 }
 
-function ajaxRequest(){
-  // console.log('AJAX Request');
+function ajaxRequest() {
 }
 
-function createSections(){
+function createSections() {
   const main = document.getElementById(tags.constant.main);
-  for (let index = 0; index < sections.getLength(); index++){
+
+  for (let index = 0; index < sections.getLength(); index++) {
      const domSection = new DomElements(main);
      const section = sections.setByIndex(index);
      const task = tasks.setByIndex(index);
@@ -125,7 +124,7 @@ function createSections(){
        .setParent()
        .addElement({ tag: tags.constant.h3, innerText: section.getLabel(), className : tags.constant.h3})
        .addElement( {
-         tag:((section.getName() === section.constant.new) ? tags.constant.div : tags.constant.ul), 
+         tag: ((section.getName() === section.constant.new) ? tags.constant.div : tags.constant.ul), 
          id: task.getId(),
          className: classes.setByName(classes.constant.taskList).getLabel() });
   }
@@ -139,10 +138,12 @@ function getStatusFromTask(task){
 function createTask(newTask){
   const index = (newTask.hasOwnProperty(properties.constant.completed)) ? (1 + +newTask.completed) : 0;
   const {text, completed, saved} = newTask;
-  tasks.setByIndex(index);
-  sections.setByIndex(index);
   const taskContainer = document.getElementById(tasks.getId());
   const domElements = new DomElements(taskContainer);
+
+  tasks.setByIndex(index);
+  sections.setByIndex(index);
+  
   if (tasks.getName() === tasks.constant.new) {
     taskClasses.setByName(taskClasses.constant.all);
     domElements.addElement({ tag: tags.constant.input, className : classes.setByName(classes.constant.inputNew).getLabel(), type: inputTypes.constant.text, value: text })
@@ -153,13 +154,12 @@ function createTask(newTask){
     taskClasses.setByName(taskClasses.constant.view).setNext(saved);
     buttons.setByName(buttons.constant.save).setNext(saved);
     domElements.addElement({ tag:  tags.constant.li, className: taskClasses.getLabel() })
-      .setParent();
-    domElements
+      .setParent()
       .addElement({ tag: tags.constant.input, className: classes.setByName(classes.constant.checkbox).getLabel(), type: inputTypes.constant.checkbox, checked: completed })
       .setEvent({ name: events.constant.change, action: actions.setByName(actions.constant.checkbox).getName() }) 
       .addElement({ tag: tags.constant.label, className: classes.setByName(classes.constant.label).getLabel(), type: inputTypes.constant.text, innerText: text })
       .addElement({ tag: tags.constant.input, className: classes.setByName(classes.constant.task).getLabel(), type: inputTypes.constant.text, value: text })
-      .addElement({ tag: tags.constant.button, className: buttons.getClass(), innerText: buttons.getLabel()})
+      .addElement({ tag: tags.constant.button, className: buttons.getClass(), innerText: buttons.getLabel() })
       .setEvent({ name: events.constant.click, action: actions.setByName(actions.constant.edit).getName() }) 
       .addElement({ tag: tags.constant.button, className: buttons.setByName(buttons.constant.delete).getClass() })
       .setEvent({ name: events.constant.click, action: actions.setByName(actions.constant.delete).getName() }) 
@@ -168,7 +168,7 @@ function createTask(newTask){
   }
 }
 
-function updateInput(taskClass, [label, input]){
+function updateInput(taskClass, [label, input]) {
   switch (taskClass){
     case taskClasses.setByName( taskClasses.constant.edit).getLabel():
       label.innerText = input.value;
@@ -182,10 +182,11 @@ function updateInput(taskClass, [label, input]){
 function actionAdd(listItem) {
   const input = listItem.querySelector(tags.constant.input + other.setByName(other.constant.textInput).getLabel());
   if (input.value) {
-    createTask({text:input.value, completed:false, saved:true});
+    createTask({text: input.value, completed: false, saved: true});
     input.value = '';
   }
 }
+
 function actionNextButton(listItem) {
   const label = listItem.querySelector(tags.constant.label);
   const input = listItem.querySelector(tags.constant.input + other.setByName(other.constant.textInput).getLabel());
@@ -206,7 +207,7 @@ function actionNextStatus(list, listItem) {
   document.getElementById(tasks.setByName(status).setNext(true).getId())?.appendChild(listItem);
 }
 
-function actionTask(task, action){
+function actionTask(task, action) {
   const listItem = task?.parentNode;
   const list = listItem?.parentNode;
   switch (action) {
@@ -224,11 +225,12 @@ function actionTask(task, action){
       break;
   }   
 }
-function loadTasks(){
-  for (let task of DEFAULT_TASKS){
+
+function loadTasks() {
+  for (let task of DEFAULT_TASKS) {
     createTask(task);
   }
 }
 
- createSections();
-  loadTasks();
+createSections();
+loadTasks();
