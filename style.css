@@ -1,143 +1,152 @@
 .body {
-    background-color: #f8f8f8;
-    color: #333;
-    font-family: Lato, sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  font-family: Lato, sans-serif;
 }
-.header-info {
-    width: 500px;
-    margin: 0 auto;
-    display: block;
-    text-align: right;
-}
-.header-image {
-    width: 100%;
-}
-.header-more-info {
-    font-family: fantasy, cursive;
-}
-#main {
-    display: block;
-    width: 500px;
-    margin: 0 auto 0;
-}
-h3 {
-    color: #333;
-    font-weight: 700;
-    font-size: 15px;
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
-    padding-top:30px;
-    margin: 0;
-    text-transform: uppercase;
-    list-style:none;
-}
-.task-list {
-   margin:0;
-   padding: 0px;
-   list-style:none;
-   width: 500px;
-   /* padding: 20px 0; */
-   /* border: 1px solid rgb(72, 0, 255); */
 
+.header-info {
+  width: 500px;
+  margin: 0 auto;
+  display: block;
+  text-align: right;
+}
+
+.header-image {
+  width: 100%;
+}
+
+.header-more-info {
+  font-family: fantasy, cursive;
+}
+
+#main {
+  display: block;
+  width: 500px;
+  margin: 0 auto 0;
+}
+
+h3 {
+  color: #333;
+  font-weight: 700;
+  font-size: 15px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  padding-top:30px;
+  margin: 0;
+  text-transform: uppercase;
+  list-style:none;
+}
+
+.task-list {
+  margin:0;
+  padding: 0px;
+  list-style:none;
+  width: 500px;
 }
 
 .task-edit, .task-view {
-    display: flex;
-    flex-grow: 1;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 20px 0;
-    color: #888;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 20px 0;
+  color: #888;
+  border-bottom: 1px solid #eee;
 }
 
 #section-new {
-    margin: -14px 0px -4px 0px;
-    padding-top: 30px;
+  margin: -14px 0px -4px 0px;
+  padding-top: 30px;
 }
 
 #tasks-new {
-    padding: 20px 0;
-    display: flex;
+  padding: 20px 0;
+  display: flex;
 }
+
 .input-new {
-    font-size: 18px;
-    line-height: 18px;
-    height: 21px;
-    padding: 0 9px;
-    border: 1px solid #dDd;
-    background: #FFF;
-    border-radius: 6px;
-    font-family: Lato, sans-serif;
-    color: #888;
-    width: 420px; 
-    
-    outline:none;
+  font-size: 18px;
+  line-height: 18px;
+  height: 21px;
+  padding: 0 9px;
+  border: 1px solid #dDd;
+  background: #FFF;
+  border-radius: 6px;
+  font-family: Lato, sans-serif;
+  color: #888;
+  width: 420px; 
+  outline:none;
 }
+
 .task {
-    margin: 0;
-    font-size: 18px;
-    line-height: 18px;
-    height: 21px;
-    padding: 0 9px;
-    border: 1px solid #dDd;
-    background: #FFF;
-    border-radius: 6px;
-    font-family: Lato, sans-serif;
-    color: #888;
-    width: 328px;
-    outline:none;   
+  margin: 0;
+  font-size: 18px;
+  line-height: 18px;
+  height: 21px;
+  padding: 0 9px;
+  border: 1px solid #dDd;
+  background: #FFF;
+  border-radius: 6px;
+  font-family: Lato, sans-serif;
+  color: #888;
+  width: 328px;
+  outline:none;   
 }
  
 .input-new:focus {
-    color:#333;
+  color:#333;
 }
+
 .task:focus {
-    color:#333;
+  color:#333;
 }
+
 .checkbox {
-
-    margin: 0 10px;
+  margin: 0 10px;
 }
+
 .label {
-  
-    padding-left: 10px;
-    box-sizing: border-box;
-    font-size: 18px;
-    width: 340px;
-
+  padding-left: 10px;
+  box-sizing: border-box;
+  font-size: 18px;
+  width: 340px;
 }
+
 .button, .button-delete {
-    background: none;
-    border: 0px;
-    color: #888;
-    font-size: 15px;
-    width: 60px;
-    font-family: Lato, sans-serif;
-    cursor: pointer;
-    outline:none;
-
-
+  background: none;
+  border: 0px;
+  color: #888;
+  font-size: 15px;
+  width: 60px;
+  font-family: Lato, sans-serif;
+  cursor: pointer;
+  outline:none;
 }
+
 .button:hover {
-    color: #3a3A3a;
+  color: #3a3A3a;
 }
 
 .button-image {
-    height: 2em;
-    transform: rotateZ(45deg);
-    transition: transform 200ms ease-in;
+  height: 2em;
+  transform: rotateZ(45deg);
+  transition: transform 200ms ease-in;
 }
+
 .button-image:hover {
-    transform: rotateZ(0);
+  transform: rotateZ(0);
 }
+
 .task-view label {
-    display:none;
+  display:none;
 }
+
 .task-edit input[type=text]{
-    display:none;
+  display:none;
 }
+
 @media (max-width:768px) {
-  .header-info { text-align: center;
+  .header-info {
+    text-align: center;
   }
 }
