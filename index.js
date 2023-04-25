@@ -136,11 +136,9 @@ function createTask(newTask){
   const index = (newTask.hasOwnProperty(properties.nodeName.completed)) ? (1 + +newTask.completed) : 0;
   const task = tasks.setByIndex(index);
   const section = sections.setByIndex(index);
-
   const {text, completed, saved} = newTask;
   const taskContainer = document.getElementById(tasks.getId());
   const domElements = new DomElements(taskContainer);
-  
   
   if (tasks.getName() === tasks.nodeName.new) {
     taskClasses.setByName(taskClasses.nodeName.all);
