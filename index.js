@@ -51,15 +51,10 @@ class NodeList{
   getClass() {
     return this.classList[this.index];
   }
-  getLabelByName(name) {
-    const index = this.nameList.indexOf(name);
-    return this.labelList[index];
-  }
   getId() {
     const name = this.nameList[this.index];
     return `${this.mask}${name}`;
   }
-  
   getLength () {
     return this.nameList.length;
   }
