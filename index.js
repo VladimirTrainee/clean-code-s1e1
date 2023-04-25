@@ -134,8 +134,8 @@ function getStatusFromTask(task){
 
 function createTask(newTask){
   const index = (newTask.hasOwnProperty(properties.nodeName.completed)) ? (1 + +newTask.completed) : 0;
-  tasks.setByIndex(index);
-  sections.setByIndex(index);
+  const task = tasks.setByIndex(index);
+  const section = sections.setByIndex(index);
 
   const {text, completed, saved} = newTask;
   const taskContainer = document.getElementById(tasks.getId());
